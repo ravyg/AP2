@@ -199,14 +199,14 @@ func (e *FCBEvaluation) HasTripped() bool {
 
 // RiskPayload is the container for risk signals in AP2 messages.
 type RiskPayload struct {
-	FCBEvaluation           *FCBEvaluation     `json:"fcb_evaluation,omitempty"`
-	AgentModality           AgentModality      `json:"agent_modality"`
-	AgentID                 *string            `json:"agent_id,omitempty"`
-	AgentType               *string            `json:"agent_type,omitempty"`
-	SessionID               *string            `json:"session_id,omitempty"`
-	CumulativeSessionValue  *float64           `json:"cumulative_session_value,omitempty"`
-	TransactionCountToday   *int               `json:"transaction_count_today,omitempty"`
-	CustomSignals           map[string]any     `json:"custom_signals,omitempty"`
+	FCBEvaluation          *FCBEvaluation `json:"fcb_evaluation,omitempty"`
+	AgentModality          AgentModality  `json:"agent_modality"`
+	AgentID                *string        `json:"agent_id,omitempty"`
+	AgentType              *string        `json:"agent_type,omitempty"`
+	SessionID              *string        `json:"session_id,omitempty"`
+	CumulativeSessionValue *float64       `json:"cumulative_session_value,omitempty"`
+	TransactionCountToday  *int           `json:"transaction_count_today,omitempty"`
+	CustomSignals          map[string]any `json:"custom_signals,omitempty"`
 }
 
 // NewRiskPayload creates a new RiskPayload with default modality.
