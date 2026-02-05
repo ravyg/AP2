@@ -130,25 +130,25 @@ const (
 
 // TripConditionResult captures the outcome of one risk check.
 type TripConditionResult struct {
-	ConditionType TripConditionType   `json:"condition_type"`
-	Status        TripConditionStatus `json:"status"`
-	Threshold     *float64            `json:"threshold,omitempty"`
-	ActualValue   *float64            `json:"actual_value,omitempty"`
-	Message       *string             `json:"message,omitempty"`
-	Suggestion    *string             `json:"suggestion,omitempty"`
+	ConditionType TripConditionType   `json:"condition_type"`         // Type of condition evaluated.
+	Status        TripConditionStatus `json:"status"`                 // Pass, fail, or warning.
+	Threshold     *float64            `json:"threshold,omitempty"`    // Limit checked against.
+	ActualValue   *float64            `json:"actual_value,omitempty"` // Observed value.
+	Message       *string             `json:"message,omitempty"`      // Human-readable explanation.
+	Suggestion    *string             `json:"suggestion,omitempty"`   // Suggested resolution.
 }
 
 // HumanEscalation captures details when FCB trips and requires human review.
 type HumanEscalation struct {
-	EscalationID           string              `json:"escalation_id"`
-	TriggeredAt            string              `json:"triggered_at,omitempty"`
-	ApproverID             *string             `json:"approver_id,omitempty"`
-	Decision               *EscalationDecision `json:"decision,omitempty"`
-	DecidedAt              *string             `json:"decided_at,omitempty"`
-	Conditions             []string            `json:"conditions,omitempty"`
-	Notes                  *string             `json:"notes,omitempty"`
-	TimeoutAt              *string             `json:"timeout_at,omitempty"`
-	DefaultActionOnTimeout *EscalationDecision `json:"default_action_on_timeout,omitempty"`
+	EscalationID           string              `json:"escalation_id"`                       // Unique ID for this escalation.
+	TriggeredAt            string              `json:"triggered_at,omitempty"`              // When triggered (RFC3339).
+	ApproverID             *string             `json:"approver_id,omitempty"`               // Reviewer who handled this.
+	Decision               *EscalationDecision `json:"decision,omitempty"`                  // Approver's decision.
+	DecidedAt              *string             `json:"decided_at,omitempty"`                // When decided (RFC3339).
+	Conditions             []string            `json:"conditions,omitempty"`                // Conditions for conditional approval.
+	Notes                  *string             `json:"notes,omitempty"`                     // Approver notes.
+	TimeoutAt              *string             `json:"timeout_at,omitempty"`                // Deadline for resolution (RFC3339).
+	DefaultActionOnTimeout *EscalationDecision `json:"default_action_on_timeout,omitempty"` // Action if timeout expires.
 }
 
 // NewHumanEscalation creates a new HumanEscalation with timestamp.
@@ -163,14 +163,14 @@ func NewHumanEscalation(escalationID string) *HumanEscalation {
 
 // FCBEvaluation contains complete FCB evaluation results.
 type FCBEvaluation struct {
-	FCBState        FCBState              `json:"fcb_state"`
-	PreviousState   *FCBState             `json:"previous_state,omitempty"`
-	TripsEvaluated  int                   `json:"trips_evaluated"`
-	TripsTriggered  int                   `json:"trips_triggered"`
-	TripResults     []TripConditionResult `json:"trip_results,omitempty"`
-	RiskScore       *float64              `json:"risk_score,omitempty"`
-	HumanEscalation *HumanEscalation      `json:"human_escalation,omitempty"`
-	EvaluatedAt     string                `json:"evaluated_at,omitempty"`
+	FCBState        FCBState              `json:"fcb_state"`                  // Current FCB state.
+	PreviousState   *FCBState             `json:"previous_state,omitempty"`   // State before this evaluation.
+	TripsEvaluated  int                   `json:"trips_evaluated"`            // Total conditions checked.
+	TripsTriggered  int                   `json:"trips_triggered"`            // Conditions that triggered.
+	TripResults     []TripConditionResult `json:"trip_results,omitempty"`     // Results; use AddTripResult to update.
+	RiskScore       *float64              `json:"risk_score,omitempty"`       // Aggregate score 0.0-1.0.
+	HumanEscalation *HumanEscalation      `json:"human_escalation,omitempty"` // Escalation if FCB tripped.
+	EvaluatedAt     string                `json:"evaluated_at,omitempty"`     // When evaluated (RFC3339).
 }
 
 // NewFCBEvaluation creates a new FCBEvaluation with timestamp.
@@ -203,14 +203,14 @@ func (e *FCBEvaluation) HasTripped() bool {
 
 // RiskPayload is the container for risk signals in AP2 messages.
 type RiskPayload struct {
-	FCBEvaluation          *FCBEvaluation `json:"fcb_evaluation,omitempty"`
-	AgentModality          AgentModality  `json:"agent_modality"`
-	AgentID                *string        `json:"agent_id,omitempty"`
-	AgentType              *string        `json:"agent_type,omitempty"`
-	SessionID              *string        `json:"session_id,omitempty"`
-	CumulativeSessionValue *float64       `json:"cumulative_session_value,omitempty"`
-	TransactionCountToday  *int           `json:"transaction_count_today,omitempty"`
-	CustomSignals          map[string]any `json:"custom_signals,omitempty"`
+	FCBEvaluation          *FCBEvaluation `json:"fcb_evaluation,omitempty"`           // FCB evaluation results.
+	AgentModality          AgentModality  `json:"agent_modality"`                     // Human present or not.
+	AgentID                *string        `json:"agent_id,omitempty"`                 // Agent identifier.
+	AgentType              *string        `json:"agent_type,omitempty"`               // Agent category.
+	SessionID              *string        `json:"session_id,omitempty"`               // Session for correlation.
+	CumulativeSessionValue *float64       `json:"cumulative_session_value,omitempty"` // Total session value so far.
+	TransactionCountToday  *int           `json:"transaction_count_today,omitempty"`  // Transactions today.
+	CustomSignals          map[string]any `json:"custom_signals,omitempty"`           // Implementation-specific signals.
 }
 
 // NewRiskPayload creates a new RiskPayload with default modality.
