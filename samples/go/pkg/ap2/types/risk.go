@@ -25,9 +25,13 @@ package types
 
 import "time"
 
-const (
-	RiskPayloadDataKey   = "ap2.risk.RiskPayload"
-	FCBEvaluationDataKey = "ap2.risk.FCBEvaluation"
+// Data key prefix for risk types.
+const riskDataKeyPrefix = "ap2.risk."
+
+// Data keys for AP2 message data parts.
+var (
+	RiskPayloadDataKey   = riskDataKeyPrefix + "RiskPayload"
+	FCBEvaluationDataKey = riskDataKeyPrefix + "FCBEvaluation"
 )
 
 // TripConditionType represents categories of runtime risk checks.

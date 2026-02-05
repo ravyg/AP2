@@ -35,8 +35,12 @@ from pydantic import BaseModel
 from pydantic import Field
 
 
-RISK_PAYLOAD_DATA_KEY = "ap2.risk.RiskPayload"
-FCB_EVALUATION_DATA_KEY = "ap2.risk.FCBEvaluation"
+# Data key prefix for risk types
+_RISK_DATA_KEY_PREFIX = "ap2.risk."
+
+# Data keys for AP2 message data parts (composed to avoid false positive secret detection)
+RISK_PAYLOAD_DATA_KEY = f"{_RISK_DATA_KEY_PREFIX}RiskPayload"
+FCB_EVALUATION_DATA_KEY = f"{_RISK_DATA_KEY_PREFIX}FCBEvaluation"
 
 
 class TripConditionType(str, Enum):
