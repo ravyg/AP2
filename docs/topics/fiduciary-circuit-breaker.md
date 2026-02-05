@@ -27,7 +27,7 @@ FCB fills this gap by providing **cross-transaction behavioral monitoring** that
 
 ## Conceptual Model
 
-```
+```text
 ┌─────────────────────────────────────────────────────────────────────────────┐
 │                    AGENT GOVERNANCE STACK                                   │
 ├─────────────────────────────────────────────────────────────────────────────┤
@@ -58,7 +58,7 @@ FCB fills this gap by providing **cross-transaction behavioral monitoring** that
 The FCB operates as a state machine:
 
 | State | Behavior | Entry Condition |
-|-------|----------|-----------------|
+| ----- | -------- | --------------- |
 | **CLOSED** | Normal operation. Agent acts autonomously. | Initial state; human approves from OPEN; or conditions met from HALF_OPEN |
 | **OPEN** | All actions blocked. Requires human review. | Any trip condition fails from CLOSED; or conditions violated from HALF_OPEN |
 | **HALF_OPEN** | Limited operations with enhanced monitoring. | Human approves with conditions from OPEN |
@@ -66,12 +66,12 @@ The FCB operates as a state machine:
 
 ### State Transitions
 
-```
+```text
 CLOSED ──[trip condition fails]──► OPEN
    ▲                                  │
    │                    ┌─────────────┼─────────────┐
    │                    │             │             │
-   │              [approve]   [approve w/conds]  [reject]
+   │              [approve]   [approve w/conditions]  [reject]
    │                    │             │             │
    │                    │             ▼             ▼
    └────────────────────┘        HALF_OPEN    TERMINATED
@@ -89,7 +89,7 @@ CLOSED ──[trip condition fails]──► OPEN
 Trip conditions are predicate functions that evaluate agent behavior:
 
 | Type | Description | Example |
-|------|-------------|---------|
+| ---- | ----------- | ------- |
 | `VALUE_THRESHOLD` | Single transaction exceeds limit | Order > $100,000 |
 | `CUMULATIVE_THRESHOLD` | Running total exceeds threshold | Daily spend > $500,000 |
 | `VELOCITY` | Too many actions too quickly | > 10 transactions/minute |
@@ -138,7 +138,7 @@ The `RiskPayload` can be attached to any AP2 message via the `risk_data` DataPar
           "agent_modality": "HUMAN_NOT_PRESENT",
           "agent_id": "agent_xyz",
           "agent_type": "B2B_BUYER",
-          "session_id": "sess_abc123",
+          "session_id": "session_abc123",
           "cumulative_session_value": 125000,
           "transaction_count_today": 3
         }
@@ -178,7 +178,7 @@ When FCB trips, the `human_escalation` field captures the escalation flow:
       "human_escalation": {
         "escalation_id": "esc_789",
         "triggered_at": "2026-02-03T14:30:00Z",
-        "approver_id": "user_jsmith",
+        "approver_id": "user_john_smith",
         "decision": "APPROVE_WITH_CONDITIONS",
         "decided_at": "2026-02-03T14:45:00Z",
         "conditions": [
@@ -228,7 +228,7 @@ risk_payload = RiskPayload(
     fcb_evaluation=evaluation,
     agent_modality=AgentModality.HUMAN_NOT_PRESENT,
     agent_id="agent_xyz",
-    session_id="sess_abc123",
+    session_id="session_abc123",
 )
 ```
 
@@ -260,18 +260,22 @@ riskPayload.AgentID = &agentID
 ## Benefits for Payment Ecosystem
 
 ### For Merchants
+
 - Real-time visibility into agent behavior before accepting transaction
 - Ability to require higher security for risky transactions
 
 ### For Payment Networks
+
 - Standardized risk signals for authorization decisions
 - Clear audit trail of FCB state and human approvals
 
 ### For Issuers
+
 - Additional data points for fraud detection
 - Visibility into agent vs. human-initiated transactions
 
 ### For Users
+
 - Confidence that agents operate within guardrails
 - Human oversight for exceptional cases
 
