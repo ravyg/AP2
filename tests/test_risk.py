@@ -209,6 +209,8 @@ class TestFCBEvaluation:
 
     def test_risk_score_bounds(self):
         """Test risk_score validation."""
+        from pydantic import ValidationError
+
         # Valid score
         eval = FCBEvaluation(
             fcb_state=FCBState.CLOSED,
@@ -234,6 +236,24 @@ class TestFCBEvaluation:
             risk_score=1.0,
         )
         assert eval_max.risk_score == 1.0
+
+        # Invalid scores - below minimum
+        with pytest.raises(ValidationError):
+            FCBEvaluation(
+                fcb_state=FCBState.CLOSED,
+                trips_evaluated=1,
+                trips_triggered=0,
+                risk_score=-0.1,
+            )
+
+        # Invalid scores - above maximum
+        with pytest.raises(ValidationError):
+            FCBEvaluation(
+                fcb_state=FCBState.CLOSED,
+                trips_evaluated=1,
+                trips_triggered=0,
+                risk_score=1.1,
+            )
 
     def test_evaluation_with_escalation(self):
         """Test evaluation with human escalation."""

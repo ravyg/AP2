@@ -3,7 +3,7 @@
 !!! info
 
     This extension provides structured risk types for AP2 Section 7.4 (Risk Signals).
-    
+
     `v0.1-alpha` (see [roadmap](../roadmap.md))
 
 ## Overview
@@ -59,10 +59,10 @@ The FCB operates as a state machine:
 
 | State | Behavior | Entry Condition |
 |-------|----------|-----------------|
-| **CLOSED** | Normal operation. Agent acts autonomously. | Initial state; or human approves |
-| **OPEN** | All actions blocked. Requires human review. | Any trip condition fails |
-| **HALF_OPEN** | Limited operations with enhanced monitoring. | Human approves with conditions |
-| **TERMINATED** | Permanently halted. No recovery. | Human rejects; or timeout |
+| **CLOSED** | Normal operation. Agent acts autonomously. | Initial state; human approves from OPEN; or conditions met from HALF_OPEN |
+| **OPEN** | All actions blocked. Requires human review. | Any trip condition fails from CLOSED; or conditions violated from HALF_OPEN |
+| **HALF_OPEN** | Limited operations with enhanced monitoring. | Human approves with conditions from OPEN |
+| **TERMINATED** | Permanently halted. No recovery. | Human rejects from OPEN; or timeout |
 
 ### State Transitions
 
@@ -239,18 +239,22 @@ import "github.com/google-agentic-commerce/ap2/samples/go/pkg/ap2/types"
 
 // Create an FCB evaluation
 evaluation := types.NewFCBEvaluation(types.FCBStateClosed)
+threshold := 100000.0
+actualValue := 45000.0
+riskScore := 0.15
 evaluation.AddTripResult(types.TripConditionResult{
     ConditionType: types.TripConditionValueThreshold,
     Status:        types.TripConditionStatusPass,
-    Threshold:     floatPtr(100000),
-    ActualValue:   floatPtr(45000),
+    Threshold:     &threshold,
+    ActualValue:   &actualValue,
 })
-evaluation.RiskScore = floatPtr(0.15)
+evaluation.RiskScore = &riskScore
 
 // Create risk payload
 riskPayload := types.NewRiskPayload(types.AgentModalityHumanNotPresent)
 riskPayload.FCBEvaluation = evaluation
-riskPayload.AgentID = stringPtr("agent_xyz")
+agentID := "agent_xyz"
+riskPayload.AgentID = &agentID
 ```
 
 ## Benefits for Payment Ecosystem
