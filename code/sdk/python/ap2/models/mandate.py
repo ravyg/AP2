@@ -37,6 +37,13 @@ class IntentMandate(BaseModel):
     human-not-present flows, additional fields will be added to this mandate.
     """
 
+    risk_payload: RiskPayload | None = Field(
+        None,
+        description=(
+            'Optional structured risk payload carrying the current risk'
+            ' assessment state (Risk Signals, AP2 v0.1 Section 7.4).'
+        ),
+    )
     user_cart_confirmation_required: bool = Field(
         True,
         description=(
@@ -74,13 +81,6 @@ class IntentMandate(BaseModel):
     intent_expiry: str = Field(
         ...,
         description='When the intent mandate expires, in ISO 8601 format.',
-    )
-    risk_payload: RiskPayload | None = Field(
-        None,
-        description=(
-            'Optional structured risk payload carrying the current risk'
-            ' assessment state (Risk Signals, AP2 v0.1 Section 7.4).'
-        ),
     )
 
 

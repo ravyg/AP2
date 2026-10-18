@@ -23,14 +23,15 @@ const (
 )
 
 type IntentMandate struct {
+	// RiskPayload carries optional FCB risk signals (AP2 v0.1 Section 7.4).
+	RiskPayload *RiskPayload `json:"risk_payload,omitempty"`
+
 	UserCartConfirmationRequired *bool    `json:"user_cart_confirmation_required,omitempty"`
 	NaturalLanguageDescription   string   `json:"natural_language_description"`
 	Merchants                    []string `json:"merchants,omitempty"`
 	SKUs                         []string `json:"skus,omitempty"`
 	RequiresRefundability        *bool    `json:"requires_refundability,omitempty"`
 	IntentExpiry                 string   `json:"intent_expiry"`
-	// RiskPayload carries optional FCB risk signals (AP2 v0.1 Section 7.4).
-	RiskPayload *RiskPayload `json:"risk_payload,omitempty"`
 }
 
 func NewIntentMandate() *IntentMandate {
